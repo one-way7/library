@@ -1,10 +1,6 @@
 const addBookBtn = document.querySelector(".add-book");
 const formContainer = document.querySelector(".form");
 const form = document.querySelector("form");
-const titleInput = document.querySelector("#title");
-const authorInput = document.querySelector("#author");
-const pagesInput = document.querySelector("#pages");
-const isReadInput = document.querySelector("#isRead");
 
 let myLibrary = [];
 
@@ -14,21 +10,9 @@ addBookBtn.addEventListener("click", (e) => {
 
 form.addEventListener("submit", (e) => {
   e.preventDefault();
-
-  const obj = {
-    title: titleInput.value,
-    author: authorInput.value,
-    pages: pagesInput.value,
-    isRead: isReadInput.checked,
-  };
-
-  titleInput.value = "";
-  authorInput.value = "";
-  pagesInput.value = "";
-  isReadInput.checked = false;
   formContainer.classList.add("hidden");
-
-  addBookToLibrary(obj);
+  addBookToLibrary();
+  form.reset();
 });
 
 function Book(title, author, pages, isRead) {
@@ -38,17 +22,22 @@ function Book(title, author, pages, isRead) {
   this.isRead = isRead;
 }
 
-function addBookToLibrary({ title, author, pages, isRead }) {
+function addBookToLibrary() {
+  const title = document.querySelector("#title").value;
+  const author = document.querySelector("#author").value;
+  const pages = document.querySelector("#pages").value;
+  const isRead = document.querySelector("#isRead").checked;
+
   const book = new Book(title, author, pages, isRead);
   myLibrary.push(book);
 
-  displayBooks();
+  render();
 }
 
 function removeBookFromLibrary(bookTitle) {
   myLibrary = myLibrary.filter((book) => bookTitle !== book.title);
 
-  displayBooks();
+  render();
 }
 
 function changeReadStatus(bookTitle) {
@@ -60,16 +49,12 @@ function changeReadStatus(bookTitle) {
 
     return book;
   });
-  displayBooks();
+  render();
 }
 
-function displayBooks() {
-  const books = document.querySelector(".books");
-  if (books) books.remove();
-
-  const booksContainer = document.createElement("div");
-  booksContainer.classList.add("books");
-  document.body.insertAdjacentElement("beforeend", booksContainer);
+function render() {
+  const booksLibrary = document.querySelector(".books-library");
+  booksLibrary.innerHTML = "";
 
   for (let value of myLibrary) {
     const book = document.createElement("div");
@@ -107,8 +92,8 @@ function displayBooks() {
       changeReadStatus(title);
     });
 
-    booksContainer.insertAdjacentElement("beforeend", book);
+    booksLibrary.insertAdjacentElement("beforeend", book);
   }
 }
 
-displayBooks(myLibrary);
+render(myLibrary);
